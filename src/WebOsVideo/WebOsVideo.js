@@ -263,6 +263,8 @@ function WebOsVideo(options) {
                 //     console.log('got source info', JSON.stringify(result.sourceInfo.programInfo[0]));
                 // } catch(e) {};
                 var info = result.sourceInfo.programInfo[0];
+                console.log(info)
+                console.log(JSON.stringify(info))
 
                 setSubs(info);
 
@@ -1079,12 +1081,12 @@ function WebOsVideo(options) {
 
 WebOsVideo.canPlayStream = function () { // function(stream)
     var res = webOSTVResolution.getInstance();
-    console.log(res.uiPlaneResolution.width + "x" + res.uiPlaneResolution.height);
+    console.log("Video resolution: " + res.uiPlaneResolution.width + "x" + res.uiPlaneResolution.height);
 
     res.getVideoPlaneResolution(function (vidRes) {
-        console.log(vidRes.width + "x" + vidRes.height);
-        console.log("" + vidRes.support4K);
-        console.log("" + vidRes.support8K);
+        console.log("TV resolution: " + vidRes.width + "x" + vidRes.height);
+        console.log("Support 4K? " + vidRes.support4K);
+        console.log("Support 8K? " + vidRes.support8K);
     });
     return Promise.resolve(true);
 };
