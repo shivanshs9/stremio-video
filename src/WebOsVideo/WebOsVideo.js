@@ -178,9 +178,9 @@ function WebOsVideo(options) {
 
             // console.log('sub tracks 2');
 
-            try {
-                console.log('got sub info', JSON.stringify(info.subtitleTrackInfo));
-            } catch(e) {};
+            // try {
+            //     console.log('got sub info', JSON.stringify(info.subtitleTrackInfo));
+            // } catch(e) {};
             for (var i = 0; i < info.subtitleTrackInfo.length; i++) {
                 var textTrack = info.subtitleTrackInfo[i];
                 textTrack.index = i;
@@ -263,8 +263,6 @@ function WebOsVideo(options) {
                 //     console.log('got source info', JSON.stringify(result.sourceInfo.programInfo[0]));
                 // } catch(e) {};
                 var info = result.sourceInfo.programInfo[0];
-                console.log(info)
-                console.log(JSON.stringify(info))
 
                 setSubs(info);
 
@@ -343,7 +341,7 @@ function WebOsVideo(options) {
                 'mediaId': knownMediaId,
                 'enable': status
             }
-        });
+        }, console.log, console.warn);
     };
 
     var styleElement = document.createElement('style');
