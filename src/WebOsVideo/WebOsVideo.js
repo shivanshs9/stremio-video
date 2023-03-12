@@ -8,12 +8,12 @@ var webOSTVResolution = require('./webOSTVResolution')
 function luna(params, call, fail, method) {
     if (call) params.onSuccess = call || function () { };
 
-    params.onFailure = function () { // function(result)
+    params.onFailure = function (args) { // function(result)
         // console.log('WebOS',(params.method || method) + ' [fail][' + result.errorCode + '] ' + result.errorText );
 
-        if (fail) fail();
+        if (fail) fail(args);
     };
-    console.log('WebOS', `${(params.method || method)} | ${call} | ${params}`)
+    // console.log('WebOS', `${(params.method || method)} | ${call} | ${params}`)
 
     window.webOS.service.request(method || 'luna://com.webos.media', params);
 }
@@ -178,9 +178,9 @@ function WebOsVideo(options) {
 
             // console.log('sub tracks 2');
 
-            // try {
-            //     console.log('got sub info', JSON.stringify(info.subtitleTrackInfo));
-            // } catch(e) {};
+            try {
+                console.log('got sub info', JSON.stringify(info.subtitleTrackInfo));
+            } catch(e) {};
             for (var i = 0; i < info.subtitleTrackInfo.length; i++) {
                 var textTrack = info.subtitleTrackInfo[i];
                 textTrack.index = i;
@@ -195,7 +195,7 @@ function WebOsVideo(options) {
                 textTracks.push({
                     id: textTrackId,
                     lang: textTrackLang,
-                    label: textTrackLang,
+                    label: textTrackLang || 'Embedded #' + (i+1),
                     origin: 'EMBEDDED',
                     embedded: true,
                     mode: textTrackId === currentSubTrack ? 'showing' : 'disabled',
@@ -335,7 +335,7 @@ function WebOsVideo(options) {
 
         disabledSubs = !status;
 
-        // console.log('enable subs: ' + status);
+        console.log('enable subs: ' + status);
 
         luna({
             method: 'setSubtitleEnable',
@@ -683,7 +683,7 @@ function WebOsVideo(options) {
 
                         currentSubTrack = propValue;
                         var trackIndex = parseInt(propValue.replace('EMBEDDED_', ''));
-                        // console.log('set subs to track idx: ' + trackIndex);
+                        console.log('set subs to track idx: ' + trackIndex);
                         luna({
                             method: 'selectTrack',
                             parameters: {
@@ -705,6 +705,9 @@ function WebOsVideo(options) {
                                 events.emit('subtitlesTrackLoaded', selectedSubtitlesTrack);
                                 onPropChanged('selectedSubtitlesTrackId');
                             }
+                        }, function(result) {
+                            console.log('failed to load subs')
+                            console.log(result)
                         });
                     } else if (!propValue) {
                         toggleSubtitles(false);
